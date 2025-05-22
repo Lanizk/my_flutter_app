@@ -7,6 +7,13 @@ import 'package:my_flutter_app/features/communityr/repository/communityrepositor
 import 'package:my_flutter_app/model/community_model.dart';
 import 'package:routemaster/routemaster.dart';
 
+final communityControllerProvider =
+    StateNotifierProvider<CommunityController, bool>((ref) {
+  final communityRepository = ref.watch(communityRepositoryProvider);
+  return CommunityController(
+      communityRepository: communityRepository, ref: ref);
+});
+
 class CommunityController extends StateNotifier<bool> {
   final CommunityRepository _communityRepository;
   final Ref _ref;
@@ -19,6 +26,7 @@ class CommunityController extends StateNotifier<bool> {
         super(false);
 
   void createCommunity(String name, BuildContext context) async {
+    state = true;
     final uid = _ref.read(userProvider)?.uid ?? '';
 
     Community community = Community(
@@ -30,6 +38,7 @@ class CommunityController extends StateNotifier<bool> {
         mods: [uid]);
 
     final res = await _communityRepository.createCommunity(community);
+    state = false;
     res.fold((l) => showSnackBar(context, l.message), (r) {
       showSnackBar(context, 'Community created succesfully');
       Routemaster.of(context).pop();

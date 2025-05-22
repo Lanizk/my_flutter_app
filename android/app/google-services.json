@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "965369209410",
+    "project_id": "reddit-a0608",
+    "storage_bucket": "reddit-a0608.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:965369209410:android:6ae0681ed2b368bce703db",
+        "android_client_info": {
+          "package_name": "com.example.my_flutter_app"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyACi24YLoo8f49CMnSApGEq536L7wfdPV8"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

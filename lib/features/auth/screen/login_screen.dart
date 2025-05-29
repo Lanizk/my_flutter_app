@@ -7,7 +7,7 @@ import 'package:my_flutter_app/features/auth/controller/auth_conroller.dart';
 import '../../../core/constants/constants.dart';
 
 class LoginScreen extends ConsumerWidget {
-  const LoginScreen({Key? key}) : super(key: key);
+  const LoginScreen({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {

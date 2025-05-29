@@ -26,6 +26,7 @@ class _CreateCommunityScreenState extends ConsumerState<CreateCommunityScreen> {
         .createCommunity(communityNameController.text.trim(), context);
   }
 
+  @override
   Widget build(BuildContext context) {
     final isLoading = ref.watch(communityControllerProvider);
     return Scaffold(

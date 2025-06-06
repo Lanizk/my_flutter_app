@@ -3,9 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:my_flutter_app/common/error_text.dart';
 import 'package:my_flutter_app/common/loader.dart';
-import 'package:my_flutter_app/features/auth/controller/auth_conroller.dart';
 import 'package:my_flutter_app/features/communityr/controller/communitycontroller.dart';
-import 'package:routemaster/routemaster.dart';
 
 class communityScreen extends ConsumerWidget {
   final String name;
@@ -14,14 +12,8 @@ class communityScreen extends ConsumerWidget {
     required this.name,
   });
 
-
-  void navigateToModTools(BuildContext context)
-  {
-    Routemaster.of(context).push('/mod-tools/$name');
-  }
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final user=ref.watch(userProvider)!;
     return Scaffold(
       body: ref.watch(getCommunityByNameProvider(name)).when(
           data: (community) => NestedScrollView(
@@ -62,30 +54,10 @@ class communityScreen extends ConsumerWidget {
                               fontWeight: FontWeight.bold,
                             ),
                           ),
-                          community.mods.contains(user.uid)?
                           OutlinedButton(
-                              onPressed: () {navigateToModTools(context);},
-                              style:ElevatedButton.styleFrom(
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(20),
-
-                                ),
-                                padding: const EdgeInsets.symmetric(horizontal: 25),
-                              ),
-                              child: const Text('Mod Tools')):OutlinedButton(
-                              onPressed: () {},
-                              style:ElevatedButton.styleFrom(
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(20),
-
-                                ),
-                                padding: const EdgeInsets.symmetric(horizontal: 25),
-                              ),
-                              child: Text(community.members.contains(user.uid)? 'Joined':'Join')),
+                              onPressed: () {}, child: const Text('Join'))
                         ],
-                      ),
-                          Padding(padding: const EdgeInsets.only(top:10),
-                          child: Text('${community.members.length} members'),)
+                      )
                     ])),
                   )
                 ];

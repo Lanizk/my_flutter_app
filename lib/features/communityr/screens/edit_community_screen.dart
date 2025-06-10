@@ -9,6 +9,7 @@ import 'package:my_flutter_app/features/communityr/controller/communitycontrolle
 
 import '../../../common/loader.dart';
 import '../../../core/constants/constants.dart';
+import '../../../model/community_model.dart';
 import '../../../theme/pallete.dart';
 
 class EditCommunityScreen extends ConsumerStatefulWidget {
@@ -43,8 +44,18 @@ class _EditCommunityScreenState extends ConsumerState<EditCommunityScreen> {
     }
   }
 
+  void save(Community community)
+  {
+    ref.read(communityControllerProvider.notifier).editCommunity(
+        profileFile: profileFile,
+        bannerFile: bannerFile,
+        context: context,
+        community: community);
+  }
+
   @override
   Widget build(BuildContext context) {
+    final isLoading=ref.watch(communityControllerProvider);
     return ref.watch(getCommunityByNameProvider(widget.name)).when(
         data: (community) => Scaffold(
             //backgroundColor: Pallete.darkModeAppTheme.,
@@ -52,9 +63,9 @@ class _EditCommunityScreenState extends ConsumerState<EditCommunityScreen> {
                 title: const Text('Edit Community'),
                 centerTitle: false,
                 actions: [
-                  TextButton(onPressed: () {}, child: const Text('Saved'))
+                  TextButton(onPressed: ()=>save(community) , child: const Text('Saved'))
                 ]),
-            body: Padding(
+            body: isLoading? const Loader(): Padding(
               padding: const EdgeInsets.all(8.0),
               child: Column(
                 children: [

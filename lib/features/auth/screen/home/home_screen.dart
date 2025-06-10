@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:my_flutter_app/features/auth/controller/auth_conroller.dart';
 import 'package:my_flutter_app/features/auth/screen/drawer/community_list_drawer.dart';
+import 'package:my_flutter_app/home/delegates/search_community_delegate.dart';
 
 class HomeScreen extends ConsumerWidget {
   const HomeScreen({super.key});
@@ -28,7 +29,7 @@ class HomeScreen extends ConsumerWidget {
           );
         }),
         actions: [
-          IconButton(onPressed: () {}, icon: const Icon(Icons.search)),
+          IconButton(onPressed: () {showSearch(context: context, delegate: SearchCommunityDelegate(ref));}, icon: const Icon(Icons.search)),
           IconButton(
             onPressed: () {},
             icon: CircleAvatar(

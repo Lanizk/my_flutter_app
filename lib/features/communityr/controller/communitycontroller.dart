@@ -2,8 +2,10 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:fpdart/fpdart.dart';
 import 'package:my_flutter_app/core/constants/constants.dart';
 import 'package:my_flutter_app/core/constants/providers/storage_repository_provider.dart';
+import 'package:my_flutter_app/core/failure.dart';
 import 'package:my_flutter_app/core/utils.dart';
 import 'package:my_flutter_app/features/auth/controller/auth_conroller.dart';
 import 'package:my_flutter_app/features/communityr/repository/communityrepository.dart';
@@ -49,6 +51,31 @@ class CommunityController extends StateNotifier<bool> {
         _ref = ref,
         _storageRepository=storageRepository,
         super(false);
+
+
+  void joinCommunity(Community community,BuildContext context) async{
+   final user=_ref.read(userProvider)!;
+
+    Either<Failure,void> res;
+
+    if(community.members.contains(user.uid)){
+      res= await _communityRepository.leaveCommunity(community.name, user.uid);
+    }
+    else{
+      res= await _communityRepository.joinCommunity(community.name, user.uid);
+    }
+    
+    res.fold((l)=>showSnackBar(context, l.message), (r){
+      if(community.members.contains(user.uid)){
+        showSnackBar(context, 'Community left successfully');
+      }
+      else{
+        showSnackBar(context, 'Community joined Successfully');
+      }
+    });
+  }
+
+
 
   void createCommunity(String name, BuildContext context) async {
     state = true;
@@ -111,5 +138,10 @@ class CommunityController extends StateNotifier<bool> {
     return _communityRepository.searchCommunity(query);
   }
 
-  void joinCommunity(Community community, BuildContext context) {}
+  void addMods(String communityName, List<String> uids, BuildContext context) async {
+
+    final res=await _communityRepository.addMods(communityName, uids);
+    res.fold((l)=>showSnackBar(context, l.message),
+        (r)=>Routemaster.of(context).pop());
+  }
 }

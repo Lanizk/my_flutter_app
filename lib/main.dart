@@ -45,7 +45,7 @@ class _MyAppState extends ConsumerState<MyApp> {
         data: (data) => MaterialApp.router(
               debugShowCheckedModeBanner: false,
               title: 'Redit Tutorial',
-              theme: Pallete.darkModeAppTheme,
+              theme: ref.watch(themeNotifierProvider),
               // home: const LoginScreen(),
               routerDelegate: RoutemasterDelegate(
                 routesBuilder: (context) {

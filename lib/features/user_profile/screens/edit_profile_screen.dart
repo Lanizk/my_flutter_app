@@ -4,6 +4,7 @@ import 'package:dotted_border/dotted_border.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:my_flutter_app/features/auth/controller/auth_conroller.dart';
+import 'package:my_flutter_app/features/user_profile/controller/user_profile_controller.dart';
 
 import '../../../common/error_text.dart';
 import '../../../common/loader.dart';
@@ -57,18 +58,28 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
       });
     }
   }
+
+  void save(){
+    ref.read(userProfileControllerProvider.notifier).editProfile(
+        profileFile: profileFile,
+        bannerFile: bannerFile,
+        context: context,
+        name:nameController.text.trim());
+  }
+
   @override
   Widget build(BuildContext context) {
+    final isLoading = ref.watch(userProfileControllerProvider);
     return ref.watch(getUserDataProvider(widget.uid)).when(
         data: (user) => Scaffold(
           //backgroundColor: Pallete.darkModeAppTheme.,
             appBar: AppBar(
-                title: const Text('Edit Community'),
+                title: const Text('Edit Profile'),
                 centerTitle: false,
                 actions: [
-                  TextButton(onPressed: (){}, child:const Text('save'))
+                  TextButton(onPressed: save, child:const Text('save'))
                 ]),
-            body:  Padding(
+            body: isLoading? const Loader() : Padding(
               padding: const EdgeInsets.all(8.0),
               child: Column(
                 children: [

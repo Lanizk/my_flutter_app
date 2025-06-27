@@ -64,6 +64,8 @@ class ThemeNotifier extends StateNotifier<ThemeData>{
     getTheme();
   }
 
+  ThemeMode get mode=>_mode;
+
   void getTheme() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     final theme = prefs.getString('theme');
@@ -78,5 +80,20 @@ class ThemeNotifier extends StateNotifier<ThemeData>{
       state=Pallete.darkModeAppTheme;
     }
   }
-  void toggleTheme() async {}
+  void toggleTheme() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+
+    if( _mode == ThemeMode.dark){
+      _mode=ThemeMode.light;
+      state=Pallete.lightModeAppTheme;
+      prefs.setString('theme', 'light');
+    }
+
+    else{
+      _mode=ThemeMode.dark;
+      state=Pallete.lightModeAppTheme;
+      prefs.setString('theme', 'dark');
+
+    }
+  }
 }

@@ -9,6 +9,7 @@ import 'package:my_flutter_app/features/user_profile/screens/user_profile_screen
 import 'package:routemaster/routemaster.dart';
 
 import 'features/communityr/screens/add_mods_screen.dart';
+import 'features/post/screen/add_post_type_screen.dart';
 import 'features/user_profile/screens/edit_profile_screen.dart';
 
 final logedOutRoute =
@@ -39,5 +40,11 @@ final logedInRoute = RouteMap(routes: {
   '/edit-profile/:uid': (routeData) => MaterialPage(child: EditProfileScreen(
     uid:routeData.pathParameters['uid']!,
   )),
+
+  '/add-post/:type': (routeData) => MaterialPage(child: AddPostTypeScreen(
+    type:routeData.pathParameters['type']!,
+  )),
+
+
 
 });

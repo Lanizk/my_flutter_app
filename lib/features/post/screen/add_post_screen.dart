@@ -1,21 +1,33 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:my_flutter_app/theme/pallete.dart';
+import 'package:routemaster/routemaster.dart';
 
 
 class AddPostScreen extends ConsumerWidget{
   const AddPostScreen({super.key});
 
+  void navigateTotype(BuildContext context, String type){
+    Routemaster.of(context).push('/add-post/$type');
+  }
+
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+
+
+
    double cardHeightWidth=120;
    double iconSize=60;
    final currentTheme=ref.watch(themeNotifierProvider);
 
 
-    return Wrap(children: [
+    return Row (
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      crossAxisAlignment: CrossAxisAlignment.center,
+
+      children: [
       GestureDetector(
-        onTap: (){},
+        onTap: ()=>navigateTotype(context,'image'),
         child: SizedBox(
           height: cardHeightWidth,
           width: cardHeightWidth,
@@ -34,7 +46,7 @@ class AddPostScreen extends ConsumerWidget{
       ),
 
       GestureDetector(
-        onTap: (){},
+        onTap: ()=>navigateTotype(context,'text'),
         child: SizedBox(
           height: cardHeightWidth,
           width: cardHeightWidth,
@@ -53,7 +65,7 @@ class AddPostScreen extends ConsumerWidget{
       ),
 
       GestureDetector(
-        onTap: (){},
+        onTap: ()=>navigateTotype(context,'link'),
         child: SizedBox(
           height: cardHeightWidth,
           width: cardHeightWidth,

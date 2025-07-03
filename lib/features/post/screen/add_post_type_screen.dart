@@ -10,6 +10,7 @@ import 'package:my_flutter_app/features/communityr/controller/communitycontrolle
 import '../../../core/utils.dart';
 import '../../../model/community_model.dart';
 import '../../../theme/pallete.dart';
+import '../controller/post_controller.dart';
 
 
 class AddPostTypeScreen extends ConsumerStatefulWidget {
@@ -49,22 +50,56 @@ class _AddPostTypeScreenState extends ConsumerState<AddPostTypeScreen> {
     }
   }
 
+  void sharePost(){
+
+    if(widget.type== 'image' && bannerFile !=null && titleController.text.isNotEmpty) {
+      ref.read(postControllerProvider.notifier).shareImagePost(
+          context: context,
+          title: titleController.text.trim(),
+          selectedCommunity: selectedCommunity ?? communities[0],
+          file: bannerFile,
+      );
+    }
+
+    else if(widget.type== 'text' &&  titleController.text.isNotEmpty) {
+      ref.read(postControllerProvider.notifier).shareTextPost(
+        context: context,
+        title: titleController.text.trim(),
+        selectedCommunity: selectedCommunity ?? communities[0],
+        description: descriptionController.text.trim()
+      );
+    }
+
+    else if(widget.type== 'link' &&  titleController.text.isNotEmpty && linkController.text.isNotEmpty) {
+      ref.read(postControllerProvider.notifier).shareLinkPost(
+          context: context,
+          title: titleController.text.trim(),
+          selectedCommunity: selectedCommunity ?? communities[0],
+          link: linkController.text.trim()
+      );
+    }
+    else{
+      showSnackBar(context, 'Please Enter all the fields');
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final isTypeImage= widget.type=='image';
     final isTypeText= widget.type=='text';
     final isTypeLink= widget.type=='link';
     final currentTheme=ref.watch(themeNotifierProvider);
+    final isLoading=ref.watch(postControllerProvider);
 
 
     return Scaffold(
       appBar: AppBar(
         title: Text('post ${widget.type}'),
         actions: [
-          TextButton(onPressed: (){}, child:const Text('Share'))
+          TextButton(onPressed: sharePost, child:const Text('Share'))
         ],
       ),
-      body: Padding(
+      body: isLoading ? const Loader(): Padding(
         padding: const EdgeInsets.all(8.0),
         child: Column(
           children: [
@@ -79,6 +114,7 @@ class _AddPostTypeScreenState extends ConsumerState<AddPostTypeScreen> {
               maxLength: 30,
             ),
             const SizedBox(height:  10,),
+            if (isTypeImage)
             GestureDetector(
               onTap: selectBannerImage,
               child: DottedBorder(

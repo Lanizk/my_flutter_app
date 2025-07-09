@@ -1,9 +1,7 @@
 import 'package:any_link_preview/any_link_preview.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:my_flutter_app/features/post/controller/post_controller.dart';
 import 'package:my_flutter_app/theme/pallete.dart';
-import '../core/constants/constants.dart';
 import '../features/auth/controller/auth_conroller.dart';
 import '../model/post_model.dart';
 
@@ -14,11 +12,6 @@ class PostCard extends ConsumerWidget{
     super.key,
     required this.post
 });
-
-  void deletePost(WidgetRef ref, BuildContext context)  async{
-
-    ref.read(postControllerProvider.notifier).deletePost(post,context);
-  }
 
 
   @override
@@ -87,7 +80,6 @@ class PostCard extends ConsumerWidget{
                                   ),
                                   if(post.uid == user.uid)
                                     IconButton(
-                                        onPressed: ()=> deletePost(ref,context),
                                         icon: Icon(Icons.delete,
                                           color: Pallete.redColor,))
                                 ],
@@ -117,10 +109,6 @@ class PostCard extends ConsumerWidget{
                                 ),
 
                               if(isTypeLink)
-                                Container(
-
-                                  padding: const EdgeInsets.symmetric(horizontal: 15.0),
-
                                   child: AnyLinkPreview(
                                     displayDirection: UIDirection
                                         .uiDirectionHorizontal,
@@ -138,55 +126,9 @@ class PostCard extends ConsumerWidget{
                                       style: TextStyle(
                                           color: Colors.grey),),
                                   ),
-                                ),
 
-                              Row(
-                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                children: [
-                                  Row(
-                                    children: [
-                                      IconButton(
-                                          onPressed: (){},
-                                          icon: Icon (
-                                            Constants.up,
-                                            size: 30,
-                                            color: post.upvotes.contains(user.uid) ? Pallete.redColor:null,
-                                          )),
 
-                                      Text('${post.upvotes.length-post.downvotes.length ==0 ? 'vote' : post.upvotes.length-post.downvotes.length}',
-                                      style:const TextStyle(fontSize: 17),),
-
-                                      IconButton(
-                                          onPressed: (){},
-                                          icon: Icon (
-                                            Constants.down,
-                                            size: 30,
-                                            color: post.downvotes.contains(user.uid) ? Pallete.blueColor:null,
-                                          ))
                                     ],
-                                  ),
-
-
-
-
-                              Row(
-                                children: [
-                                  IconButton(
-                                      onPressed: (){},
-                                      icon: Icon (
-                                        Icons.comment
-                                      )),
-                                  Text('${post.commentCount ==0 ? 'Comment' : post.commentCount}',
-                                    style:const TextStyle(fontSize: 17),),
-
-                                ],
-                              ),
-
-
-     ],
-    )
-    ]
-
                           )
                       )
 

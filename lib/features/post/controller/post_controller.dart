@@ -21,13 +21,6 @@ StateNotifierProvider<PostController, bool>((ref) {
 
 });
 
-
-
-final userPostsProvider = StreamProvider.family<List<Post>, List<Community>>((ref, communities)  {
-  final postController = ref.watch(postControllerProvider.notifier);
-  return postController.fetchUserPosts(communities);
-});
-
 class PostController extends StateNotifier<bool> {
   final PostRepository _postRepository;
   final Ref _ref;
@@ -101,7 +94,7 @@ class PostController extends StateNotifier<bool> {
         commentCount: 0,
         username: user.name,
         uid: user.uid,
-        type: 'link',
+        type: 'text',
         createdAt: DateTime.now(),
         awards: [],
         link: link);
@@ -121,18 +114,19 @@ class PostController extends StateNotifier<bool> {
     required Community selectedCommunity,
     required File? file,
   })
-  async {
-    state = true;
-    String postId = const Uuid().v1();
-    final user = _ref.read(userProvider)!;
-    final imageRes = await _storageRepository.storeFile(
-      path: 'posts/${selectedCommunity.name}',
-      id: postId,
-      file: file,
+  async{
+    state=true;
+    String postId=const Uuid().v1();
+    final user=_ref.read(userProvider)!;
+    final imageRes= await _storageRepository.storeFile(
+        path: 'posts/${selectedCommunity.name}',
+        id: postId,
+        file: file,
     );
 
-    imageRes.fold((l) => showSnackBar(context, l.message), (r) async {
-      final Post post = Post(
+    imageRes.fold((l)=>showSnackBar(context, l.message), (r) async{
+
+      final Post post=Post(
           id: postId,
           title: title,
           communityName: selectedCommunity.name,
@@ -142,34 +136,19 @@ class PostController extends StateNotifier<bool> {
           commentCount: 0,
           username: user.name,
           uid: user.uid,
-          type: 'image',
+          type: 'text',
           createdAt: DateTime.now(),
           awards: [],
           link: r);
 
-      final res = await _postRepository.addPost(post);
-      state = false;
-      res.fold((l) => showSnackBar(context, l.message), (r) {
+      final res= await  _postRepository.addPost(post);
+      state=false;
+      res.fold((l)=>showSnackBar(context, l.message), (r){
         showSnackBar(context, 'Posted Successfully ');
         Routemaster.of(context).pop();
       });
     });
+
+
   }
-
-    Stream <List<Post>> fetchUserPosts(List<Community> communities){
-      if(communities.isNotEmpty){
-
-        return _postRepository.fetchUserPosts(communities);
-      }
-
-      return Stream.value([]);
-
-    }
-
-    void deletePost(Post post, BuildContext context) async {
-     final res= await _postRepository.deletePost(post);
-     res.fold((l)=>null, (r)=>showSnackBar(context, 'Post Deleted Successfully'));
-    }
-
-
 }

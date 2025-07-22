@@ -12,12 +12,14 @@ import 'package:my_flutter_app/features/communityr/repository/communityrepositor
 import 'package:my_flutter_app/model/community_model.dart';
 import 'package:routemaster/routemaster.dart';
 
+import '../../../model/post_model.dart';
+
 final userCommunitiesProvider = StreamProvider((ref) {
   final communityController = ref.watch(communityControllerProvider.notifier);
   return communityController.getUserCommunities();
 });
 
-final getCommunityByNameProvider = StreamProvider.family((ref, String name) {
+final getCommunityByNameProvider = StreamProvider.family ((ref, String name) {
   return ref
       .watch(communityControllerProvider.notifier)
       .getCommunityByName(name);
@@ -27,6 +29,10 @@ final searchCommunityProvider = StreamProvider.family((ref, String query) {
   return ref
       .watch(communityControllerProvider.notifier)
       .searchCommunity(query);
+});
+
+final getCommunityPostsProvider=StreamProvider.family((ref, String name){
+  return ref.read(communityControllerProvider.notifier).getCommunityPosts(name);
 });
 
 final communityControllerProvider =
@@ -144,4 +150,10 @@ class CommunityController extends StateNotifier<bool> {
     res.fold((l)=>showSnackBar(context, l.message),
         (r)=>Routemaster.of(context).pop());
   }
-}
+
+
+  Stream <List<Post>> getCommunityPosts(String name)
+  {
+    return _communityRepository.getCommunityPosts(name);
+  }}
+

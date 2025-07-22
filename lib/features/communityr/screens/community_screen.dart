@@ -6,6 +6,7 @@
 import 'package:my_flutter_app/features/communityr/controller/communitycontroller.dart';
 import 'package:routemaster/routemaster.dart';
 
+import '../../../common/post_card.dart';
 import '../../../model/community_model.dart';
 import '../../auth/controller/auth_conroller.dart';
 
@@ -181,26 +182,28 @@ class communityScreen extends ConsumerWidget {
               ),
             ];
           },
-          body:Loader()
-          // body: ref.watch(getCommunityPostsProvider(name)).when(
-          //   data: (data) {
-          //     return ListView.builder(
-          //       itemCount: data.length,
-          //       itemBuilder: (BuildContext context, int index) {
-          //         final post = data[index];
-          //         return PostCard(post: post);
-          //       },
-          //     );
-          //   },
-          //   error: (error, stackTrace) {
-          //     return ErrorText(error: error.toString());
-          //   },
-          //   loading: () => const Loader(),
-          // ),
-        ),
+            body: ref.watch(getCommunityPostsProvider(name)).when(
+              data: (data) {
+                return ListView.builder(
+                  itemCount: data.length,
+                  itemBuilder: (BuildContext context, int index) {
+                    final post = data[index];
+                    return PostCard(post: post);
+                  },
+                );
+              },
+              error: (error,stackTrace){
+                print(error.toString());
+                return ErrorText(error: error.toString());
+              },
+              loading: () => const Loader(),
+
+            )),
+
         error: (error, stackTrace) => ErrorText(error: error.toString()),
         loading: () => const Loader(),
-      ),
-    );
+
+        ));
+
   }
 }

@@ -5,6 +5,7 @@ import 'package:my_flutter_app/features/communityr/screens/community_screen.dart
 import 'package:my_flutter_app/features/communityr/screens/create_community_screens.dart';
 import 'package:my_flutter_app/features/communityr/screens/edit_community_screen.dart';
 import 'package:my_flutter_app/features/communityr/screens/mod_tools_screen.dart';
+import 'package:my_flutter_app/features/post/screen/comment_screen.dart';
 import 'package:my_flutter_app/features/user_profile/screens/user_profile_screen.dart';
 import 'package:routemaster/routemaster.dart';
 
@@ -43,6 +44,11 @@ final logedInRoute = RouteMap(routes: {
 
   '/add-post/:type': (routeData) => MaterialPage(child: AddPostTypeScreen(
     type:routeData.pathParameters['type']!,
+  )),
+
+
+  '/post/:postId/comments': (route) => MaterialPage(child: CommentScreen(
+    postID:route.pathParameters['postId']!,
   )),
 
 

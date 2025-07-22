@@ -2,11 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:my_flutter_app/common/error_text.dart';
 import 'package:my_flutter_app/common/loader.dart';
+import 'package:my_flutter_app/common/post_card.dart';
 import 'package:my_flutter_app/features/communityr/controller/communitycontroller.dart';
 import 'package:routemaster/routemaster.dart';
 
 import '../../../model/community_model.dart';
 import '../../auth/controller/auth_conroller.dart';
+import '../controller/user_profile_controller.dart';
 
 
 class UserProfileScreen extends ConsumerWidget {
@@ -102,23 +104,23 @@ void navigateToEditUser(BuildContext context){
                 ),
               ];
             },
-            body:Loader()
-          // body: ref.watch(getCommunityPostsProvider(name)).when(
-          //   data: (data) {
-          //     return ListView.builder(
-          //       itemCount: data.length,
-          //       itemBuilder: (BuildContext context, int index) {
-          //         final post = data[index];
-          //         return PostCard(post: post);
-          //       },
-          //     );
-          //   },
-          //   error: (error, stackTrace) {
-          //     return ErrorText(error: error.toString());
-          //   },
-          //   loading: () => const Loader(),
-          // ),
-        ),
+            body: ref.watch(getUserPostsProvider(uid)).when(
+                data: (data){
+                  return ListView.builder(
+                      itemCount: data.length,
+                      itemBuilder: (BuildContext context, int index){
+                            final post=data[index];
+                            return PostCard(post: post);
+                      });
+                },
+                error: (error,stackTrace){
+                  print(error.toString());
+                  return ErrorText(error: error.toString());
+                },
+                loading: () => const Loader(),
+
+    )),
+
         error: (error, stackTrace) => ErrorText(error: error.toString()),
         loading: () => const Loader(),
       ),

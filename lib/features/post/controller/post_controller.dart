@@ -21,6 +21,16 @@ StateNotifierProvider<PostController, bool>((ref) {
 
 });
 
+final userPostsProvider = StreamProvider.family((ref, List<Community> communities) {
+  final postController = ref.watch(postControllerProvider.notifier);
+  return postController.fetchUserPosts(communities);
+});
+
+final getPostByIdProvider =StreamProvider.family((ref, String postId){
+  final postController=ref.watch(postControllerProvider.notifier);
+  return postController.getPostById(postId);
+});
+
 class PostController extends StateNotifier<bool> {
   final PostRepository _postRepository;
   final Ref _ref;
@@ -114,19 +124,18 @@ class PostController extends StateNotifier<bool> {
     required Community selectedCommunity,
     required File? file,
   })
-  async{
-    state=true;
-    String postId=const Uuid().v1();
-    final user=_ref.read(userProvider)!;
-    final imageRes= await _storageRepository.storeFile(
-        path: 'posts/${selectedCommunity.name}',
-        id: postId,
-        file: file,
+  async {
+    state = true;
+    String postId = const Uuid().v1();
+    final user = _ref.read(userProvider)!;
+    final imageRes = await _storageRepository.storeFile(
+      path: 'posts/${selectedCommunity.name}',
+      id: postId,
+      file: file,
     );
 
-    imageRes.fold((l)=>showSnackBar(context, l.message), (r) async{
-
-      final Post post=Post(
+    imageRes.fold((l) => showSnackBar(context, l.message), (r) async {
+      final Post post = Post(
           id: postId,
           title: title,
           communityName: selectedCommunity.name,
@@ -141,14 +150,39 @@ class PostController extends StateNotifier<bool> {
           awards: [],
           link: r);
 
-      final res= await  _postRepository.addPost(post);
-      state=false;
-      res.fold((l)=>showSnackBar(context, l.message), (r){
+      final res = await _postRepository.addPost(post);
+      state = false;
+      res.fold((l) => showSnackBar(context, l.message), (r) {
         showSnackBar(context, 'Posted Successfully ');
         Routemaster.of(context).pop();
       });
     });
-
-
   }
+
+  Stream<List<Post>> fetchUserPosts(List<Community> communities) {
+    if (communities.isNotEmpty) {
+      return _postRepository.fetchUserPosts(communities);
+    }
+    return Stream.value([]);
+  }
+
+    void deletePost(Post post, BuildContext context) async {
+      final res = await _postRepository.deletePost(post);
+      res.fold((l) => null, (r) => showSnackBar(context, 'Post Deleted successfully!'));
+    }
+
+  void upvote(Post post) async{
+    final uid=_ref.read(userProvider)!.uid;
+    _postRepository.upvote(post, uid);
+  }
+
+  void downvote(Post post) async{
+    final uid=_ref.read(userProvider)!.uid;
+    _postRepository.downvote(post, uid);
+  }
+
+Stream <Post> getPostById( String postId){
+
+    return _postRepository.getPostById(postId);
+}
 }

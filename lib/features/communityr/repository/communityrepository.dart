@@ -7,6 +7,8 @@ import 'package:my_flutter_app/core/type_def.dart';
 import 'package:my_flutter_app/model/community_model.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../../model/post_model.dart';
+
 final communityRepositoryProvider = Provider((ref) {
   return CommunityRepository(firestore: ref.watch(firestoreProvider));
 });
@@ -93,6 +95,18 @@ class CommunityRepository {
         catch(e){return left(Failure(e.toString()));
   }}
 
+  Stream <List<Post>> getCommunityPosts(String name){
+
+    return _posts.
+    where('communityName', isEqualTo: name)
+        .orderBy('createdAt',descending:true)
+        .snapshots()
+        .map((event) =>event.docs
+        .map((e)=>Post.fromMap(
+        e.data() as Map<String, dynamic>
+    )).toList());
+  }
+
   FuturVoid addMods(String communityName, List<String> uids) async {
     try {
       return right(_communities.doc(communityName).update({'mods':uids,}));
@@ -119,4 +133,6 @@ class CommunityRepository {
 
   CollectionReference get _communities =>
       _firestore.collection(FirebaseConstants.communitiesCollection);
+
+  final CollectionReference _posts = FirebaseFirestore.instance.collection('posts');
 }

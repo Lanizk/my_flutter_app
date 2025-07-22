@@ -7,6 +7,7 @@ import 'package:my_flutter_app/model/post_model.dart';
 import 'package:routemaster/routemaster.dart';
 import 'package:uuid/uuid.dart';
 import '../../../core/constants/providers/storage_repository_provider.dart';
+import '../../../model/comments_model.dart';
 import '../../../model/community_model.dart';
 import '../../auth/controller/auth_conroller.dart';
 import '../repository/post_repository.dart';
@@ -29,6 +30,11 @@ final userPostsProvider = StreamProvider.family((ref, List<Community> communitie
 final getPostByIdProvider =StreamProvider.family((ref, String postId){
   final postController=ref.watch(postControllerProvider.notifier);
   return postController.getPostById(postId);
+});
+
+final getPostCommentsProvider =StreamProvider.family((ref, String postId){
+  final postController=ref.watch(postControllerProvider.notifier);
+  return postController.fetchPostComment(postId);
 });
 
 class PostController extends StateNotifier<bool> {
@@ -181,8 +187,40 @@ class PostController extends StateNotifier<bool> {
     _postRepository.downvote(post, uid);
   }
 
-Stream <Post> getPostById( String postId){
-
+  Stream <Post> getPostById( String postId){
     return _postRepository.getPostById(postId);
-}
-}
+  }
+
+  void addComment({
+
+    required BuildContext context,
+    required String text,
+    required Post post,
+})
+
+  async{
+
+    final user= _ref.read(userProvider)!;
+    String commentId=const Uuid().v1();
+    Comment comment=Comment(
+      id:commentId,
+      text:text,
+      createdAt:DateTime.now(),
+      postId:post.id,
+      username:user.name,
+      profilePic:user.profilePic
+    );
+
+    _postRepository.addComment(comment);
+
+    final res= await _postRepository.addComment(comment);
+    res.fold((l)=>showSnackBar(context, l.message), (r)=>null);
+  }
+
+
+  Stream<List<Comment>> fetchPostComment(String postId) {
+
+      return _postRepository.getCommentOfPost(postId);
+    }
+
+  }

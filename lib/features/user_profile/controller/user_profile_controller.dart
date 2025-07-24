@@ -8,6 +8,7 @@ import 'package:my_flutter_app/model/user_model.dart';
 import 'package:routemaster/routemaster.dart';
 
 import '../../../core/constants/providers/storage_repository_provider.dart';
+import '../../../core/enums/enums.dart';
 import '../../../core/utils.dart';
 import '../../../model/post_model.dart';
 
@@ -79,4 +80,16 @@ class UserProfileController extends StateNotifier<bool> {
   Stream <List<Post>> getUSerPosts(String uid)
   {
     return _userProfileRepository.getUSerPosts(uid);
-  }}
+  }
+
+
+  void updateUserKarma(UserKarma karma) async{
+
+   UserModel user=_ref.read(userProvider)!;
+   user=user.copyWith(karma: user.karma+ karma.karma);
+
+   final res= await _userProfileRepository.updateUserKarma(user);
+   res.fold((l)=>null, (r)=>_ref.read(userProvider.notifier).update((state)=>user));
+  }
+
+}
